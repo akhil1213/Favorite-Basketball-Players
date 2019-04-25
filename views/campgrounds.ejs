@@ -1,0 +1,19 @@
+
+<% include partials/header %>
+<div class = "container">
+<header class = "jumbotron">
+    <h1>Welcome to your nba page</h1>
+    <p> Your favorite player is <%= favoritePlayer %></p>
+</header>
+<div class = "row text-center" style = "display:flex; flex-wrap:wrap;">
+    <% for( var i = 0; i < basketballArray.length; i++){%>
+        <div class = "col-md-3 col-sm-6">
+            <h4> <%= basketballArray[i].name %></h4>
+            <p>
+                <a href = "/campgrounds/<%=i%>" class = "btn btn-primary">More Info</a>
+                <a href = "/favplayer/<%=basketballArray[i].name%>" class = "btn btn-primary">Fav player</a> 
+            </p>
+        </div>>
+    <% } %>
+</div>
+<% include partials/footer %>
