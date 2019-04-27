@@ -4,6 +4,8 @@ var bodyParser = require("body-parser");//You need to use bodyParser() if you wa
 var mongoose = require('mongoose');
 var request = require("request");
 var basketballArray;
+var tempArray;
+var searchMade = false;
 request('https://www.fantasybasketballnerd.com/service/players',function(error,response,body){
     if(error){
         console.log(error);//checking if there is an error
@@ -51,16 +53,23 @@ app.get("/campgrounds", function(req,res){
                 fav = favPlayer;
             }
         })
-        res.render("campgrounds", {basketballArray:basketballArray, favoritePlayer:fav});
+        if(searchMade==false){
+            res.render("campgrounds", {basketballArray:basketballArray, favoritePlayer:fav});
+        }else{
+            res.render("campgrounds", {basketballArray:tempArray, favoritePlayer:fav});
+        }
 })
 app.get("/campgrounds/new", function(req,res){
-    res.render("newcampground");
+    res.render("search.ejs");
 });
 app.get("/campgrounds/:id", function(req,res){
     var param = req.params.id;
     res.render("show", {player:basketballArray[param]});
 });
 //how to get input from routes?
+app.get("/searchPlayer/:name",function(req,res){
+    res.render(req.params.name);
+});
 app.get("/favplayer/:id",function(req,res){
     var param = req.params.id;
     var favPlayer = {name:param};
@@ -72,6 +81,27 @@ app.get("/favplayer/:id",function(req,res){
         }
     })
     res.render("campgrounds", {basketballArray:basketballArray, favoritePlayer:param} );
+})
+app.post("/campgrounds",function(req,res){
+    var search = req.body.searchField;
+    if(search!=""){
+        var searchWithQuote = search.charAt(0).toUpperCase() + search.slice(1);
+        console.log(searchWithQuote);
+        tempArray=[];
+        var count =0;
+        var len = search.length;
+        for(var i = 0; i < basketballArray.length; i++){
+            var stringVersion = JSON.stringify(basketballArray[i].name);
+            console.log(stringVersion);
+            if(stringVersion.substring(2,2+len) == searchWithQuote){
+                tempArray[count++] = basketballArray[i];
+            }
+        }
+        searchMade = true;
+    }else{
+        searchMade = false;
+    }
+    res.redirect("/campgrounds");
 })
 app.listen(3000, function(){
     console.log("yelpcampworking");
