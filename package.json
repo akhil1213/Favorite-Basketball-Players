@@ -4,7 +4,8 @@
   "description": "yelpcamp v1",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "server": "nodemon server.js"
   },
   "author": "",
   "license": "ISC",
@@ -12,8 +13,11 @@
     "body-parser": "^1.18.3",
     "ejs": "^2.6.1",
     "express": "^4.16.4",
-    "mongoose": "^5.5.2",
+    "mongoose": "^5.7.7",
     "request": "^2.88.0",
     "xml2js": "^0.4.19"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.4"
   }
 }

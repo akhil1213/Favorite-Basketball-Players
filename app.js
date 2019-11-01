@@ -29,14 +29,14 @@ request('https://www.fantasybasketballnerd.com/service/players',function(error,r
         }
     }
 });
+mongoose.connect('mongodb+srv://akhil:akhil123@cluster0-ucvbp.mongodb.net/test?retryWrites=true&w=majority', {useNewUrlParser: true,useUnifiedTopology: true, useFindAndModify:false}).then(()=>{
+    console.log("worked");
+}).catch(err => {
+    console.log("didnt connect");
+})
+const FavoritePlayer = require('./models/Player')
 
-let schema = new mongoose.Schema({
-    name: String,
-});
 
-mongoose.connect("mongodb://localhost/fav_player", {useNewUrlParser: true});
-
-var FavoritePlayer = mongoose.model("favoritePlayer", schema);
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.set("view engine", "ejs"); //now we dont gotta write landing.ejs
@@ -46,13 +46,8 @@ app.get("/",function(req,res){
 var count = 0;
 var fav;
 app.get("/campgrounds", function(req,res){
-        FavoritePlayer.find({}, function(err, favPlayer){
-            if(err){
-                console.log(err);
-            }else{
-                fav = favPlayer;
-            }
-        })
+        FavoritePlayer.findById({_id : '5dbc80461c9d4400000f3343'})
+        .then(item => fav = item.name);
         if(searchMade==false){
             res.render("campgrounds", {basketballArray:basketballArray, favoritePlayer:fav});
         }else{
@@ -72,14 +67,9 @@ app.get("/searchPlayer/:name",function(req,res){
 });
 app.get("/favplayer/:id",function(req,res){
     var param = req.params.id;
-    var favPlayer = {name:param};
-    FavoritePlayer.create(favPlayer, function(err, newlyCreated){
-        if(err){
-            console.log(err);
-        }else{
-            console.log(newlyCreated);
-        }
-    })
+    FavoritePlayer.findByIdAndUpdate({_id : '5dbc80461c9d4400000f3343'},
+    {name:param})
+    .then(item => console.log(item));
     res.render("campgrounds", {basketballArray:basketballArray, favoritePlayer:param} );
 })
 app.post("/campgrounds",function(req,res){
